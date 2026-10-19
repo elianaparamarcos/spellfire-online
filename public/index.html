@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spellfire Online - Deck Builder</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #121212; color: #e0e0e0; }
+        h1 { text-align: center; color: #d4af37; }
+        .container { display: flex; gap: 20px; max-width: 1200px; margin: 0 auto; }
+        .panel { flex: 1; background: #1e1e1e; padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        .card-item { background: #2a2a2a; padding: 12px; margin-bottom: 10px; border-radius: 6px; border-left: 4px solid #d4af37; }
+        .card-item h3 { margin: 0 0 5px 0; color: #fff; }
+        .card-item p { margin: 3px 0; font-size: 14px; color: #b0b0b0; }
+        button { background: #d4af37; color: #121212; border: none; padding: 8px 12px; cursor: pointer; font-weight: bold; border-radius: 4px; margin-top: 8px; }
+        button:hover { background: #e6c558; }
+    </style>
+</head>
+<body>
+
+    <h1>Spellfire Online - Deck Builder</h1>
+
+    <div class="container">
+        <!-- Catálogo de Cartas -->
+        <div class="panel">
+            <h2>Catálogo de Cartas</h2>
+            <div id="card-list">A carregar cartas da API...</div>
+        </div>
+
+        <!-- Meu Baralho -->
+        <div class="panel">
+            <h2>Meu Baralho (<span id="deck-count">0</span> cartas)</h2>
+            <div id="deck-list">O seu baralho está vazio. Adicione cartas ao lado!</div>
+        </div>
+    </div>
+
+    <script>
+        let deck = [];
+
+        async function loadCards() {
+            try {
+                const response = await fetch('/api/cards');
+                const result = await response.json();
+                
+                const container = document.getElementById('card-list');
+                if (result.success && result.data.length > 0) {
+                    container.innerHTML = '';
+                    result.data.forEach(card => {
+                        container.innerHTML += `
+                            <div class="card-item">
+                                <h3>${card.name}</h3>
+                                <p><strong>Tipo:</strong> ${card.type} | <strong>Mundo:</strong> ${card.world}</p>
+                                <p>${card.description}</p>
+                                <button onclick='addToDeck(${JSON.stringify(card)})'>Adicionar ao Baralho</button>
+                            </div>
+                        `;
+                    });
+                } else {
+                    container.innerHTML = '<p>Nenhuma carta encontrada.</p>';
+                }
+            } catch (error) {
+                document.getElementById('card-list').innerHTML = '<p>Erro ao carregar cartas da API.</p>';
+            }
+        }
+
+        function addToDeck(card) {
+            deck.push(card);
+            updateDeckUI();
+        }
+
+        function updateDeckUI() {
+            const deckContainer = document.getElementById('deck-list');
+            document.getElementById('deck-count').innerText = deck.length;
+            
+            if (deck.length === 0) {
+                deckContainer.innerHTML = 'O seu baralho está vazio. Adicione cartas ao lado!';
+                return;
+            }
+
+            deckContainer.innerHTML = '';
+            deck.forEach((card, index) => {
+                deckContainer.innerHTML += `
+                    <div class="card-item" style="border-left-color: #4CAF50;">
+                        <h3>${card.name}</h3>
+                        <p>Tipo: ${card.type}</p>
+                        <button style="background: #d9534f; color: white;" onclick='removeFromDeck(${index})'>Remover</button>
+                    </div>
+                `;
+            });
+        }
+
+        function removeFromDeck(index) {
+            deck.splice(index, 1);
+            updateDeckUI();
+        }
+
+        // Carregar as cartas ao abrir a página
+        loadCards();
+    </script>
+</body>
+</html>
