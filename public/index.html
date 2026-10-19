@@ -9,9 +9,11 @@
         h1 { text-align: center; color: #d4af37; }
         .container { display: flex; gap: 20px; max-width: 1200px; margin: 0 auto; }
         .panel { flex: 1; background: #1e1e1e; padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
-        .card-item { background: #2a2a2a; padding: 12px; margin-bottom: 10px; border-radius: 6px; border-left: 4px solid #d4af37; }
-        .card-item h3 { margin: 0 0 5px 0; color: #fff; }
-        .card-item p { margin: 3px 0; font-size: 14px; color: #b0b0b0; }
+        .card-item { display: flex; gap: 15px; background: #2a2a2a; padding: 12px; margin-bottom: 12px; border-radius: 6px; border-left: 4px solid #d4af37; align-items: center; }
+        .card-img { width: 90px; height: 130px; object-fit: cover; border-radius: 4px; border: 1px solid #d4af37; background: #111; }
+        .card-info { flex: 1; }
+        .card-info h3 { margin: 0 0 5px 0; color: #fff; }
+        .card-info p { margin: 3px 0; font-size: 14px; color: #b0b0b0; }
         button { background: #d4af37; color: #121212; border: none; padding: 8px 12px; cursor: pointer; font-weight: bold; border-radius: 4px; margin-top: 8px; }
         button:hover { background: #e6c558; }
     </style>
@@ -46,12 +48,16 @@
                 if (result.success && result.data.length > 0) {
                     container.innerHTML = '';
                     result.data.forEach(card => {
+                        const imgUrl = card.iconUrl || card.image_url || 'https://via.placeholder.com/90x130?text=Sem+Imagem';
                         container.innerHTML += `
                             <div class="card-item">
-                                <h3>${card.name}</h3>
-                                <p><strong>Tipo:</strong> ${card.type} | <strong>Mundo:</strong> ${card.world}</p>
-                                <p>${card.description}</p>
-                                <button onclick='addToDeck(${JSON.stringify(card)})'>Adicionar ao Baralho</button>
+                                <img src="${imgUrl}" alt="${card.name}" class="card-img" onerror="this.src='https://via.placeholder.com/90x130?text=Spellfire'">
+                                <div class="card-info">
+                                    <h3>${card.name}</h3>
+                                    <p><strong>Tipo:</strong> ${card.type} | <strong>Mundo:</strong> ${card.world}</p>
+                                    <p>${card.description}</p>
+                                    <button onclick='addToDeck(${JSON.stringify(card)})'>Adicionar ao Baralho</button>
+                                </div>
                             </div>
                         `;
                     });
@@ -79,11 +85,15 @@
 
             deckContainer.innerHTML = '';
             deck.forEach((card, index) => {
+                const imgUrl = card.iconUrl || card.image_url || 'https://via.placeholder.com/90x130?text=Sem+Imagem';
                 deckContainer.innerHTML += `
                     <div class="card-item" style="border-left-color: #4CAF50;">
-                        <h3>${card.name}</h3>
-                        <p>Tipo: ${card.type}</p>
-                        <button style="background: #d9534f; color: white;" onclick='removeFromDeck(${index})'>Remover</button>
+                        <img src="${imgUrl}" alt="${card.name}" class="card-img" style="width: 50px; height: 70px;" onerror="this.src='https://via.placeholder.com/50x70?text=Card'">
+                        <div class="card-info">
+                            <h3>${card.name}</h3>
+                            <p>Tipo: ${card.type}</p>
+                            <button style="background: #d9534f; color: white;" onclick='removeFromDeck(${index})'>Remover</button>
+                        </div>
                     </div>
                 `;
             });
@@ -94,7 +104,6 @@
             updateDeckUI();
         }
 
-        // Carregar as cartas ao abrir a página
         loadCards();
     </script>
 </body>
