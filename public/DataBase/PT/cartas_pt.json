@@ -1,0 +1,15 @@
+[
+  {
+    "id": "1",
+    "name": "Mij Reltub, o Oráculo de Spellfire",
+    "type": "Champion",
+    "attribute": "Magic",
+    "world": "Inquisition",
+    "number": "14",
+    "set": "NS",
+    "description": "Este campeão pode ser enviado para o Vazio a partir da reserva ou da mão para parar qualquer evento ou magia...",
+    "image_url": "/images/NS/120.jpg",
+    "iconUrl": "/images/NS/120.jpg",
+    "lang": "pt"
+  }
+]
