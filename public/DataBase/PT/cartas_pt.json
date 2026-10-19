@@ -1,6 +1,8 @@
 [
   {
+    "_id": "1",
     "id": "1",
+    "cardId": "1",
     "name": "Mij Reltub, o Oráculo de Spellfire",
     "type": "Champion",
     "attribute": "Magic",
@@ -10,6 +12,8 @@
     "description": "Este campeão pode ser enviado para o Vazio a partir da reserva ou da mão para parar qualquer evento ou magia...",
     "image_url": "/images/NS/120.jpg",
     "iconUrl": "/images/NS/120.jpg",
-    "lang": "pt"
+    "imageUrl": "/images/NS/120.jpg",
+    "lang": "pt",
+    "active": true
   }
 ]
