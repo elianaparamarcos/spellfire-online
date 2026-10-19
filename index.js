@@ -13,7 +13,7 @@ app.use(express.json());
 // Servir ficheiros estáticos da pasta public
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Rota de teste inicial
+// Rota principal: agora serve o ficheiro visual index.html
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
