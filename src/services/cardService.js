@@ -4,8 +4,8 @@ const CardModel = require('../models/cardModel');
 
 class CardService {
   constructor() {
-    this.ptJsonPath = path.join(__dirname, '../../DataBase/PT/cartas_pt.json');
-    this.enJsonPath = path.join(__dirname, '../../DataBase/EN/cards_en.json');
+    this.ptJsonPath = path.join(__dirname, '../../public/DataBase/PT/cartas_pt.json');
+    this.enJsonPath = path.join(__dirname, '../../public/DataBase/EN/cards_en.json');
   }
 
   _readLocalJson(filePath) {
@@ -22,15 +22,17 @@ class CardService {
   }
 
   async getAllCards(lang = 'pt') {
+    // 1. Tentar buscar do banco de dados original se disponível
     try {
       const dbCards = await CardModel.find({ lang });
       if (dbCards && dbCards.length > 0) {
         return { source: 'database', data: dbCards };
       }
     } catch (e) {
-      // Segue para o arquivo local em caso de falha
+      // Falha silenciosa do DB, segue para o arquivo local
     }
 
+    // 2. Fallback para os arquivos JSON locais na pasta public
     const targetPath = lang.toLowerCase() === 'pt' ? this.ptJsonPath : this.enJsonPath;
     const cards = this._readLocalJson(targetPath);
     return { source: 'json_file', data: cards };
@@ -67,7 +69,8 @@ class CardService {
       }
       return matches;
     });
-    return { source: 'json_file', data: filtered };
+
+    return filtered;
   }
 }
 
