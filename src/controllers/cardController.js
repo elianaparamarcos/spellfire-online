@@ -1,55 +1,32 @@
-const CardService = require('../services/cardService');
+const path = require('path');
+const fs = require('fs');
 
-class CardController {
-  async getCards(req, res) {
+exports.getCards = (req, res) => {
+  // Caminho absoluto para o JSON dentro de public/
+  const filePath = path.join(__dirname, '../../public/DataBase/PT/cartas_pt.json');
+
+  fs.readFile(filePath, 'utf8', (err, data) => {
+    if (err) {
+      console.error("Erro ao ler ficheiro JSON:", err);
+      return res.status(500).json({
+        success: false,
+        message: 'Erro ao ler a base de dados de cartas.'
+      });
+    }
+
     try {
-      const lang = req.query.lang || 'pt';
-      const result = await CardService.getAllCards(lang);
+      const cards = JSON.parse(data);
       return res.json({
         success: true,
-        source: result.source,
-        count: result.data.length,
-        data: result.data
+        source: "json_file",
+        count: cards.length,
+        data: cards
       });
-    } catch (error) {
-      return res.status(500).json({ success: false, message: error.message });
-    }
-  }
-
-  async getCardById(req, res) {
-    try {
-      const { id } = req.params;
-      const lang = req.query.lang || 'pt';
-      const result = await CardService.getCardById(id, lang);
-      
-      if (!result.data) {
-        return res.status(404).json({ success: false, message: 'Carta não encontrada.' });
-      }
-
-      return res.json({
-        success: true,
-        source: result.source,
-        data: result.data
+    } catch (parseErr) {
+      return res.status(500).json({
+        success: false,
+        message: 'Erro ao processar o formato do JSON.'
       });
-    } catch (error) {
-      return res.status(500).json({ success: false, message: error.message });
     }
-  }
-
-  async searchCards(req, res) {
-    try {
-      const lang = req.query.lang || 'pt';
-      const result = await CardService.searchCards(req.query, lang);
-      return res.json({
-        success: true,
-        source: result.source,
-        count: result.data.length,
-        data: result.data
-      });
-    } catch (error) {
-      return res.status(500).json({ success: false, message: error.message });
-    }
-  }
-}
-
-module.exports = new CardController();
+  });
+};
